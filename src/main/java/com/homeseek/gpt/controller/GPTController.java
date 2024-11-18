@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/openai")
+@CrossOrigin(origins = "*")
+@RequestMapping("/openai")
 public class GPTController {
 
     private final GPTService GPTService;
@@ -15,7 +16,7 @@ public class GPTController {
         this.GPTService = GPTService;
     }
 
-    @PostMapping("/generate")
+    @PostMapping("/search")
     public String generateText(@RequestBody String userMessage) {
         return GPTService.getChatCompletion(userMessage);
     }

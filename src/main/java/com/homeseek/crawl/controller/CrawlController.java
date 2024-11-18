@@ -4,6 +4,7 @@ import com.homeseek.crawl.dto.NewsResp;
 import com.homeseek.crawl.service.NewsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/crawl")
+@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class CrawlController {
     private final NewsService newsService;
