@@ -29,4 +29,24 @@
         limit 50
     </select>
 
+    <select id="findDongNames" resultType="com.homeseek.map.dto.DongDto">
+        select dong_name AS dongName,
+               dong_code AS dongCode
+        from dongcodes
+        where sido_name = #{si}
+          and gugun_name = #{gu}
+          and dong_name IS NOT NULL
+          and trim(dong_name) != ''
+    </select>
+
+    <select id="findGuNames" resultType="com.homeseek.map.dto.GuDto">
+        select gugun_name AS guName,
+               dong_code AS dongCode
+        from dongcodes
+        where sido_name = #{si}
+          and gugun_name IS NOT NULL
+          and trim(gugun_name) != ''
+        group by guName
+    </select>
+
 </mapper>

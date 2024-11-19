@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/crawl")
-@CrossOrigin(origins = "*")
 @RequiredArgsConstructor
 public class CrawlController {
     private final NewsService newsService;

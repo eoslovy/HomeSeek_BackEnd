@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/trend")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "*")
 public class TrendController {
 
     private final TrendService trendService;

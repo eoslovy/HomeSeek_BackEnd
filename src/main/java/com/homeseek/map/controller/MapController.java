@@ -6,34 +6,50 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@CrossOrigin("*")
 @RequestMapping("/map")
 @RequiredArgsConstructor
 public class MapController {
     private final MapServiceImpl ms;
 
     @GetMapping("/getEstateByName")
-    public ResponseEntity<SearchByNameEstateResp> getEstatesByName(@RequestParam("keyword") String keyword) {
-        SearchByNameEstateResp resp = ms.getEstatesByName(keyword);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<List<AptDto>> getEstatesByName(@RequestParam("keyword") String keyword) {
+         return ResponseEntity.ok(ms.getEstatesByName(keyword));
     }
 
     @GetMapping("/getDongNames")
-    public ResponseEntity<DongOfGuResp> getDongNames(@RequestBody DongOfGuReq req){
-        DongOfGuResp resp = ms.getDongNames(req);
-        return ResponseEntity.ok(resp);
+    public ResponseEntity<List<DongDto>> getDongNames(@RequestParam("si") String si, @RequestParam("gu") String gu){
+        System.out.println("=======================동네임즈 응답들옴");
+        System.out.println(gu);
+        return ResponseEntity.ok(ms.getDongNames(si, gu));
     }
 
     @GetMapping("/getGuNames")
-    public ResponseEntity<GuOfSiResp> getGuNames(@RequestBody GuOfSiReq req){
-        GuOfSiResp resp = ms.getGuNames(req);
+    public ResponseEntity<List<GuDto>> getGuNames(@RequestParam("si") String si){
+        System.out.println("=======================구네임즈 응답들옴");
+        return ResponseEntity.ok(ms.getGuNames(si));
+    }
+
+    @GetMapping("/getEstateByToggleWithSi")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithSi(@RequestParam("si") String si){
+        System.out.println("=======================토글토글 응답들옴");
+        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithSi(si);
         return ResponseEntity.ok(resp);
     }
 
-    @GetMapping("/getEstateByToggle")
-    public ResponseEntity<SearchByToggleEstateWithResp> getEstatesByToggle(@RequestBody SearchByToggleEstateWithReq req){
-        SearchByToggleEstateWithResp resp = ms.getEstatesByToggle(req);
+    @GetMapping("/getEstateByToggleWithGu")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithGu(@RequestParam("gu") String gu){
+        System.out.println("=======================토글토글 응답들옴");
+        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithGu(gu);
+        return ResponseEntity.ok(resp);
+    }
+
+    @GetMapping("/getEstateByToggleWithDong")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithDong(@RequestParam("dong") String dong){
+        System.out.println("=======================토글토글 응답들옴");
+        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithDong(dong);
         return ResponseEntity.ok(resp);
     }
 }

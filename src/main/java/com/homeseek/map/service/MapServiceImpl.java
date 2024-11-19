@@ -16,23 +16,32 @@ public class MapServiceImpl implements MapService {
     private final MapMapper mm;
 
     @Override
-    public SearchByNameEstateResp getEstatesByName(String keyword) {
-        List<AptDto> list = mm.findEstateByName(keyword);
-        return new SearchByNameEstateResp(list);
+    public List<AptDto> getEstatesByName(String keyword) {
+        return mm.findEstateByName(keyword);
     }
 
     @Override
-    public DongOfGuResp getDongNames(DongOfGuReq req) {
+    public List<DongDto> getDongNames(String si, String gu) {
+        return mm.findDongNames(si, gu);
+    }
+
+    @Override
+    public List<GuDto> getGuNames(String si) {
+        return mm.findGuNames(si);
+    }
+
+    @Override
+    public List<ToggleEstateDto> getEstatesByToggleWithSi(String si) {
         return null;
     }
 
     @Override
-    public GuOfSiResp getGuNames(GuOfSiReq req) {
+    public List<ToggleEstateDto> getEstatesByToggleWithGu(String gu) {
         return null;
     }
 
     @Override
-    public SearchByToggleEstateWithResp getEstatesByToggle(SearchByToggleEstateWithReq req) {
+    public List<ToggleEstateDto> getEstatesByToggleWithDong(String dong) {
         return null;
     }
 }
