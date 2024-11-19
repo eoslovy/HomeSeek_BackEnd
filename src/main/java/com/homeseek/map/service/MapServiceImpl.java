@@ -1,7 +1,7 @@
 package com.homeseek.map.service;
 
 import com.homeseek.map.dto.*;
-import com.homeseek.map.repository.MapRepository;
+import com.homeseek.map.mapper.MapMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,14 +9,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class MapServiceImpl implements MapService {
-    private final MapRepository mr;
+
+    private final MapMapper mm;
 
     @Override
-    public SearchByNameEstateResp getEstatesByName(SearchByNameEstateReq req) {
-        List<AptDto> list = mr.findEstatesByName(req.getKeyword(), req.getSortBy());
+    public SearchByNameEstateResp getEstatesByName(String keyword) {
+        List<AptDto> list = mm.findEstateByName(keyword);
         return new SearchByNameEstateResp(list);
     }
 

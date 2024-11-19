@@ -14,8 +14,8 @@ public class MapController {
     private final MapServiceImpl ms;
 
     @GetMapping("/getEstateByName")
-    public ResponseEntity<SearchByNameEstateResp> getEstatesByName(@RequestBody SearchByNameEstateReq req){
-        SearchByNameEstateResp resp = ms.getEstatesByName(req);
+    public ResponseEntity<SearchByNameEstateResp> getEstatesByName(@RequestParam("keyword") String keyword) {
+        SearchByNameEstateResp resp = ms.getEstatesByName(keyword);
         return ResponseEntity.ok(resp);
     }
 
