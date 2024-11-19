@@ -26,12 +26,12 @@ public class GPTServiceImpl implements GPTService {
     public String getChatCompletion(String userMessage) {
         // ChatGPT에 보낼 메시지 설정
         List<Message> messages = List.of(
-                new Message("system", "You are a helpful assistant."),
+                new Message("system", "단어에 대해 간단하게 2문장으로 설명해줘."),
                 new Message("user", userMessage)
         );
 
         // OpenAIRequest 생성
-        SearchWordReq request = new SearchWordReq("gpt-3.5-turbo", messages, 50, 0.7);
+        SearchWordReq request = new SearchWordReq("gpt-3.5-turbo", messages, 200, 0.3);
 
         try {
             // WebClient를 사용해 OpenAI API에 요청
