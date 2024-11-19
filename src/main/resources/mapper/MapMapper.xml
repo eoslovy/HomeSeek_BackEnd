@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.homeseek.map.mapper.MapMapper">
+
+    <!-- findEstateByName 쿼리 정의 -->
+    <select id="findEstateByName" resultType="com.homeseek.map.dto.AptDto">
+        SELECT
+        hi.apt_nm AS aptName,
+        dc.sido_name AS sidoName,
+        dc.gugun_name AS gugunName,
+        hi.umd_nm AS umdNm,
+        hi.road_nm AS roadNm,
+        hi.road_nm_bonbun AS roadNmBonbun,
+        hi.road_nm_bubun AS roadNmBubun,
+        hd.deal_amount AS dealAmount,
+        hd.floor AS floor,
+        hi.build_year AS buildYear,
+        hi.latitude AS latitude,
+        hi.longitude AS longitude
+        FROM
+        housedeals hd
+        JOIN houseinfos hi ON hd.apt_seq = hi.apt_seq
+        JOIN dongcodes dc ON CONCAT(hi.sgg_cd, hi.umd_cd) = dc.dong_code
+        WHERE
+        hi.apt_nm LIKE CONCAT('%', #{keyword}, '%')
+        limit 50
+    </select>
+
+</mapper>
