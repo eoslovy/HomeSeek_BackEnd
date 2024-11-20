@@ -22,12 +22,27 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public List<DongDto> getDongNames(String si, String gu) {
-        return mm.findDongNames(si, gu);
+        List<DongDto> list = mm.findDongNames(si, gu);
+        if(si.equals("세종특별자치시")){
+            list.addAll(mm.findDongNamesSe(si,gu));
+        }
+        return list;
     }
 
     @Override
     public List<GuDto> getGuNames(String si) {
-        return mm.findGuNames(si);
+        List<GuDto> list = mm.findGuNames(si);
+        if(si.equals("세종특별자치시")){
+            list.addAll(mm.findGuNamesSe(si));
+        }
+        return list;
+    }
+
+    @Override
+    public List<SiDto> getSiNames() {
+        List<SiDto> list = mm.findSiNames();
+        list.addAll(mm.findSiNamesSe());
+        return list;
     }
 
     @Override

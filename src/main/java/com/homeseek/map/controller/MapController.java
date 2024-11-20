@@ -22,7 +22,6 @@ public class MapController {
     @GetMapping("/getDongNames")
     public ResponseEntity<List<DongDto>> getDongNames(@RequestParam("si") String si, @RequestParam("gu") String gu){
         System.out.println("=======================동네임즈 응답들옴");
-        System.out.println(gu);
         return ResponseEntity.ok(ms.getDongNames(si, gu));
     }
 
@@ -30,6 +29,12 @@ public class MapController {
     public ResponseEntity<List<GuDto>> getGuNames(@RequestParam("si") String si){
         System.out.println("=======================구네임즈 응답들옴");
         return ResponseEntity.ok(ms.getGuNames(si));
+    }
+
+    @GetMapping("/getSiNames")
+    public ResponseEntity<List<SiDto>> getSiNames(){
+        System.out.println("=======================시네임즈 응답들옴");
+        return ResponseEntity.ok(ms.getSiNames());
     }
 
     @GetMapping("/getEstateByToggleWithSi")

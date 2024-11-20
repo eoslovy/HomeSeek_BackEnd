@@ -10,12 +10,7 @@ public class AptDto {
     private String aptName;
     private String sidoName;
     private String gugunName;
-    private String umdNm;
-    private String roadNm;
-    private String roadNmBonbun;
-    private String roadNmBubun;
-    private String dealAmount;
-    private String floor;
+    private String dongName;
     private Integer buildYear;
     private String latitude;
     private String longitude;
