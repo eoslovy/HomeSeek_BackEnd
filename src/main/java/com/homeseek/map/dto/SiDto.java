@@ -9,9 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class DongDto {
+public class SiDto {
     private String dongCode;
-    private String dongName;
+    private String siName;
     private String latitude;
     private String longitude;
 }

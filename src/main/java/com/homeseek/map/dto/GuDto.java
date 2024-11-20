@@ -12,4 +12,6 @@ import lombok.Setter;
 public class GuDto {
     private String dongCode;
     private String guName;
+    private String latitude;
+    private String longitude;
 }
