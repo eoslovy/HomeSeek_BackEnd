@@ -19,4 +19,9 @@ public class GPTController {
     public String generateText(@RequestBody String userMessage) {
         return GPTService.getChatCompletion(userMessage);
     }
+
+    @PostMapping("/advice")
+    public String advicePrice(@RequestBody String userMessage) {
+        return GPTService.getAdvice(userMessage);
+    }
 }
