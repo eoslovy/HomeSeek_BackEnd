@@ -10,5 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DongDto {
+    private String dongCode;
     private String dongName;
 }

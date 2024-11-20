@@ -9,6 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class GuOfSiReq {
-    private String si;
+public class ToggleEstateDto {
+    String aptName;
+    String latitude;
+    String longitude;
 }
