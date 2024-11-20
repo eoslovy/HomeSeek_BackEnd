@@ -45,8 +45,8 @@
         from dongcodes
         where sido_name = #{si}
           and gugun_name IS NOT NULL
+          and dong_name IS NULL
           and trim(gugun_name) != ''
-        group by guName
     </select>
 
 </mapper>
