@@ -1,9 +1,6 @@
 package com.homeseek.map.mapper;
 
-import com.homeseek.map.dto.AptDto;
-import com.homeseek.map.dto.DongDto;
-import com.homeseek.map.dto.GuDto;
-import com.homeseek.map.dto.SiDto;
+import com.homeseek.map.dto.*;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -18,4 +15,7 @@ public interface MapMapper {
     List<GuDto> findGuNamesSe(@Param("si") String si);
     List<SiDto> findSiNames();
     List<SiDto> findSiNamesSe();
+    List<ToggleEstateDto> findToggleEstateBySi(@Param("code") String code);
+    List<ToggleEstateDto> findToggleEstateByGu(@Param("code") String code);
+    List<ToggleEstateDto> findToggleEstateByDong(@Param("code") String code);
 }

@@ -21,40 +21,32 @@ public class MapController {
 
     @GetMapping("/getDongNames")
     public ResponseEntity<List<DongDto>> getDongNames(@RequestParam("si") String si, @RequestParam("gu") String gu){
-        System.out.println("=======================동네임즈 응답들옴");
         return ResponseEntity.ok(ms.getDongNames(si, gu));
     }
 
     @GetMapping("/getGuNames")
     public ResponseEntity<List<GuDto>> getGuNames(@RequestParam("si") String si){
-        System.out.println("=======================구네임즈 응답들옴");
         return ResponseEntity.ok(ms.getGuNames(si));
     }
 
     @GetMapping("/getSiNames")
     public ResponseEntity<List<SiDto>> getSiNames(){
-        System.out.println("=======================시네임즈 응답들옴");
         return ResponseEntity.ok(ms.getSiNames());
     }
 
-    @GetMapping("/getEstateByToggleWithSi")
-    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithSi(@RequestParam("si") String si){
-        System.out.println("=======================토글토글 응답들옴");
-        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithSi(si);
-        return ResponseEntity.ok(resp);
+    @GetMapping("/getEstatesByToggleWithSi")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithSi(@RequestParam("code") String code){
+        System.out.println("==============================================");
+        return ResponseEntity.ok(ms.getEstatesByToggleWithSi(code));
     }
 
-    @GetMapping("/getEstateByToggleWithGu")
-    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithGu(@RequestParam("gu") String gu){
-        System.out.println("=======================토글토글 응답들옴");
-        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithGu(gu);
-        return ResponseEntity.ok(resp);
+    @GetMapping("/getEstatesByToggleWithGu")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithGu(@RequestParam("code") String code){
+        return ResponseEntity.ok(ms.getEstatesByToggleWithGu(code));
     }
 
-    @GetMapping("/getEstateByToggleWithDong")
-    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithDong(@RequestParam("dong") String dong){
-        System.out.println("=======================토글토글 응답들옴");
-        List<ToggleEstateDto> resp = ms.getEstatesByToggleWithDong(dong);
-        return ResponseEntity.ok(resp);
+    @GetMapping("/getEstatesByToggleWithDong")
+    public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithDong(@RequestParam("code") String code){
+        return ResponseEntity.ok(ms.getEstatesByToggleWithDong(code));
     }
 }

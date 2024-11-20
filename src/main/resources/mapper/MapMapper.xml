@@ -127,4 +127,28 @@
           and al.dong =""
     </select>
 
+    <select id="findToggleEstateBySi" resultType="com.homeseek.map.dto.ToggleEstateDto">
+        select hi.apt_nm AS aptName,
+               hi.latitude AS latitude,
+               hi.longitude AS longitude
+        from houseinfos hi
+        where left(hi.sgg_cd,2) = left(#{code},2)
+    </select>
+
+    <select id="findToggleEstateByGu" resultType="com.homeseek.map.dto.ToggleEstateDto">
+        select hi.apt_nm AS aptName,
+               hi.latitude AS latitude,
+               hi.longitude AS longitude
+        from houseinfos hi
+        where hi.sgg_cd = left(#{code},5)
+    </select>
+
+    <select id="findToggleEstateByDong" resultType="com.homeseek.map.dto.ToggleEstateDto">
+        select hi.apt_nm AS aptName,
+               hi.latitude AS latitude,
+               hi.longitude AS longitude
+        from houseinfos hi
+        where concat(hi.sgg_cd,hi.umd_cd) = #{code}
+    </select>
+
 </mapper>
