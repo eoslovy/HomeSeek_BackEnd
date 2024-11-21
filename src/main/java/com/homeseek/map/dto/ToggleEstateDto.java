@@ -10,7 +10,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ToggleEstateDto {
-    String aptName;
-    String latitude;
-    String longitude;
+    private String aptName;
+    private String latitude;
+    private String longitude;
 }

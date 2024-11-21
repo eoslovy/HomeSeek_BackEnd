@@ -46,17 +46,17 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public List<ToggleEstateDto> getEstatesByToggleWithSi(String si) {
-        return null;
+    public List<ToggleEstateDto> getEstatesByToggleWithSi(String code) {
+        return mm.findToggleEstateBySi(code);
     }
 
     @Override
-    public List<ToggleEstateDto> getEstatesByToggleWithGu(String gu) {
-        return null;
+    public List<ToggleEstateDto> getEstatesByToggleWithGu(String code) {
+        return mm.findToggleEstateByGu(code);
     }
 
     @Override
-    public List<ToggleEstateDto> getEstatesByToggleWithDong(String dong) {
-        return null;
+    public List<ToggleEstateDto> getEstatesByToggleWithDong(String code) {
+        return mm.findToggleEstateByDong(code);
     }
 }

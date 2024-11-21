@@ -9,7 +9,7 @@ public interface MapService {
     List<DongDto> getDongNames(String si, String gu);
     List<GuDto> getGuNames(String si);
     List<SiDto> getSiNames();
-    List<ToggleEstateDto> getEstatesByToggleWithSi(String si);
-    List<ToggleEstateDto> getEstatesByToggleWithGu(String gu);
-    List<ToggleEstateDto> getEstatesByToggleWithDong(String dong);
+    List<ToggleEstateDto> getEstatesByToggleWithSi(String code);
+    List<ToggleEstateDto> getEstatesByToggleWithGu(String code);
+    List<ToggleEstateDto> getEstatesByToggleWithDong(String code);
 }
