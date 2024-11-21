@@ -3,7 +3,10 @@ package com.homeseek.gpt.service;
 import com.homeseek.gpt.dto.SearchWordReq;
 import com.homeseek.gpt.dto.SearchWordReq.Message;
 import com.homeseek.gpt.dto.SearchWordResp;
+import com.homeseek.sale.dto.SaleResp;
+import com.homeseek.sale.service.SaleService;
 import io.github.bonigarcia.wdm.WebDriverManager;
+import lombok.RequiredArgsConstructor;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -22,14 +25,20 @@ import java.util.List;
 public class GPTServiceImpl implements GPTService {
 
     private final WebClient webClient;
+    private final SaleService saleService;
     private static final String KB_URL = "https://data.kbland.kr/kbstats/psychology-of-housing-market";
 
-    public GPTServiceImpl(@Value("${openai.api.key}") String apiKey) {
-        this.webClient = WebClient.builder()
+    private WebClient createWebClient(String apiKey) {
+        return WebClient.builder()
                 .baseUrl("https://api.openai.com/v1/chat/completions")
                 .defaultHeader("Authorization", "Bearer " + apiKey)
                 .defaultHeader("Content-Type", "application/json")
                 .build();
+    }
+
+    public GPTServiceImpl(SaleService saleService, @Value("${openai.api.key}") String apiKey) {
+        this.saleService = saleService;
+        this.webClient = createWebClient(apiKey);
     }
 
     @Override
@@ -95,12 +104,35 @@ public class GPTServiceImpl implements GPTService {
     }
 
     @Override
-    public String getAdvice(String userMessage) {
+    public String getAdvice(String aptName, String si, String gu) {
         String kbresult = crawlHousingMarket();
+
+        // 매물 정보 조회
+        List<SaleResp> saleList = saleService.findSalesByAptName(aptName, si, gu);
+
+        // 매물 정보를 문자열로 변환
+        StringBuilder saleInfo = new StringBuilder();
+        saleInfo.append("\n\n현재 매물 정보:\n");
+        for (SaleResp sale : saleList) {
+            saleInfo.append(String.format("- %s㎡: %d만원 (%s)\n",
+                    sale.getExcluUseAr(),
+                    sale.getPrice(),
+                    sale.getDescription()
+            ));
+        }
+        System.out.println(saleInfo.length());
+
         // ChatGPT에 보낼 메시지 설정
         List<Message> messages = List.of(
-                new Message("system", "너는 부동산 시장에 대해 조언을 해주는 입장이야. " + kbresult),
-                new Message("user", userMessage)
+                new Message("system",
+                        "너는 부동산 시장에 대해 조언을 해주는 전문가입니다. " +
+                                "현재 시장 상황과 매물 정보를 바탕으로 구매 결정에 대한 조언을 해주세요.\n\n" +
+                                "현재 시장 상황:\n" + kbresult +
+                                "\n" + saleInfo.toString()
+                ),
+                new Message("user",
+                        String.format("%s %s %s에 있는 아파트를 사려고 하는데 어떨까요?", si, gu, aptName)
+                )
         );
 
         // OpenAIRequest 생성

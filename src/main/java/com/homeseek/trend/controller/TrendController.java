@@ -1,5 +1,6 @@
 package com.homeseek.trend.controller;
 
+import com.homeseek.trend.dto.DistrictReq;
 import com.homeseek.trend.dto.TrendReq;
 import com.homeseek.trend.dto.TrendResp;
 import com.homeseek.trend.service.TrendService;
@@ -17,12 +18,22 @@ public class TrendController {
     private final TrendService trendService;
 
     @PostMapping("/search")
-    public ResponseEntity<TrendResp> getTrendData(@RequestBody TrendReq request) {
+    public ResponseEntity<TrendResp> getDistrictTrendData(@RequestBody DistrictReq request) {
         try {
-            TrendResp result = trendService.getTrendData(request);
+            TrendResp result = trendService.getDistrictTrendData(request);
             return ResponseEntity.ok(result);
         } catch (Exception e) {
             throw new RuntimeException("데이터 조회 중 오류가 발생했습니다", e);
         }
     }
+
+//    @PostMapping("/search")
+//    public ResponseEntity<TrendResp> getTrendData(@RequestBody TrendReq request) {
+//        try {
+//            TrendResp result = trendService.getTrendData(request);
+//            return ResponseEntity.ok(result);
+//        } catch (Exception e) {
+//            throw new RuntimeException("데이터 조회 중 오류가 발생했습니다", e);
+//        }
+//    }
 }

@@ -2,10 +2,9 @@ package com.homeseek.trend.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.homeseek.trend.dto.DistrictReq;
 import com.homeseek.trend.dto.TrendReq;
 import com.homeseek.trend.dto.TrendResp;
-import jakarta.annotation.PostConstruct;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +13,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TrendServiceImpl implements TrendService {
@@ -120,5 +122,48 @@ public class TrendServiceImpl implements TrendService {
         } catch (IOException e) {
             throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
         }
+    }
+
+    @Override
+    public TrendResp getDistrictTrendData(DistrictReq request) {
+        // DistrictReq를 TrendReq로 변환
+        TrendReq trendReq = convertToTrendReq(request);
+        // 기존 getTrendData 메서드 활용
+        return getTrendData(trendReq);
+    }
+
+    private TrendReq convertToTrendReq(DistrictReq request) {
+        TrendReq trendReq = new TrendReq();
+
+        // 날짜 고정 설정
+        trendReq.setEndDate("2024-11-15");
+        trendReq.setStartDate("2023-11-16");
+
+        // 날짜 설정 (나중에 동적으로 날짜 설정할 때 필요함)
+//        String endDate = LocalDate.now();
+//        LocalDate startDate = endDate.minusYears(1);
+//        trendReq.setEndDate(endDate.format(DateTimeFormatter.ISO_DATE));
+//        trendReq.setStartDate(startDate.format(DateTimeFormatter.ISO_DATE));
+
+        // 시간 단위 설정
+        trendReq.setTimeUnit("month");
+
+        // 키워드 그룹 생성
+        List<TrendReq.KeywordGroup> keywordGroups = request.getDistricts().stream()
+                .map(district -> {
+                    TrendReq.KeywordGroup group = new TrendReq.KeywordGroup();
+                    group.setGroupName(district);
+                    group.setKeywords(Arrays.asList(
+                            district + " 부동산"
+//                            ,
+//                            district.replace("구", "") + " 부동산"
+                    ));
+                    return group;
+                })
+                .collect(Collectors.toList());
+
+        trendReq.setKeywordGroups(keywordGroups);
+
+        return trendReq;
     }
 }
