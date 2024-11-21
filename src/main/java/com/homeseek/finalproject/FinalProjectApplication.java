@@ -6,6 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackages = "com.homeseek")
 @MapperScan("com.homeseek.map.mapper")
+@MapperScan("com.homeseek.dealdata.mapper")
+@MapperScan("com.homeseek.sale.mapper")
 public class FinalProjectApplication {
     public static void main(String[] args) {
         SpringApplication.run(FinalProjectApplication.class, args);
