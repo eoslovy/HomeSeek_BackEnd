@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.homeseek.dealdata.mapper.DealDataMapper">
+    <select id="findDealsByAptName" parameterType="String" resultType="com.homeseek.dealdata.dto.DealDataResp">
+        SELECT
+            id,
+            apt_nm as aptNm,
+            exclu_use_ar as excluUseAr,
+            build_year as buildYear,
+            deal_year as dealYear,
+            deal_month as dealMonth,
+            deal_day as dealDay,
+            CAST(REPLACE(deal_amount, ',', '') AS SIGNED) as dealAmount,
+            si,
+            gu,
+            dong
+        FROM
+            real_transaction_price
+        WHERE
+            apt_nm = #{aptName} and si = #{si} and gu = #{gu}
+    </select>
+</mapper>
