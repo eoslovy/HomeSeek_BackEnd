@@ -27,9 +27,9 @@
     <select id="findDongNames" resultType="com.homeseek.map.dto.DongDto">
         SELECT
         al.dong AS dongName,
-        dc.dong_code AS dongCode,
-        al.latitude AS latitude,
-        al.longitude AS longitude
+        MIN(dc.dong_code) AS dongCode,
+        MIN(al.latitude) AS latitude,
+        MIN(al.longitude) AS longitude
         FROM
         (SELECT dong_code, dong_name
         FROM dongcodes
@@ -47,14 +47,17 @@
         OR
         (CHAR_LENGTH(dc.dong_name) &lt;= 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 1), '%', RIGHT(dc.dong_name, 1)))
         )
+        GROUP BY
+        al.dong;
+
     </select>
 
     <select id="findDongNamesSe" resultType="com.homeseek.map.dto.DongDto">
         SELECT
         al.dong AS dongName,
-        dc.dong_code AS dongCode,
-        al.latitude AS latitude,
-        al.longitude AS longitude
+        MIN(dc.dong_code) AS dongCode,
+        MIN(al.latitude) AS latitude,
+        MIN(al.longitude) AS longitude
         FROM
         (SELECT dong_code, dong_name
         FROM dongcodes
@@ -71,6 +74,8 @@
         OR
         (CHAR_LENGTH(dc.dong_name) &lt;= 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 1), '%', RIGHT(dc.dong_name, 1)))
         )
+        GROUP BY
+            al.dong;
     </select>
 
     <select id="findGuNames" resultType="com.homeseek.map.dto.GuDto">
@@ -165,19 +170,20 @@
             hi.longitude AS longitude
         FROM
             houseinfos hi
-        WHERE
-            LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
-          AND hi.latitude IS NOT NULL
-          AND hi.longitude IS NOT NULL;
+        WHERE hi.latitude IS NOT NULL
+          AND hi.longitude IS NOT NULL
+        AND LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
     </select>
 
     <select id="findToggleEstateByGu" resultType="com.homeseek.map.dto.ToggleEstateDto">
         SELECT
             hi.apt_nm AS aptName,
+            dc.sido_name AS si,
+            dc.gugun_name AS gu,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
-            houseinfos hi
+            houseinfos hi, (select sido_name, gugun_name from dongcodes where dong_code = #{code}) dc
         WHERE
             hi.sgg_cd = LEFT(#{code}, 5)
           AND hi.latitude IS NOT NULL
@@ -187,14 +193,51 @@
     <select id="findToggleEstateByDong" resultType="com.homeseek.map.dto.ToggleEstateDto">
         SELECT
             hi.apt_nm AS aptName,
+            dc.sido_name AS si,
+            dc.gugun_name AS gu,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
-            houseinfos hi
+            houseinfos hi, (select sido_name, gugun_name from dongcodes where dong_code = #{code}) dc
         WHERE
             CONCAT(hi.sgg_cd, hi.umd_cd) = #{code}
           AND hi.latitude IS NOT NULL
           AND hi.longitude IS NOT NULL;
     </select>
+
+    <select id="getHospitals" resultType="com.homeseek.map.dto.HospitalDto">
+        SELECT
+            id AS id,
+            hospital_name AS name,
+            category AS category,
+            address AS address,
+            tel AS tel,
+            CAST(latitude AS CHAR) AS latitude,
+            CAST(longitude AS CHAR) AS longitude
+        FROM hospital
+    </select>
+
+    <select id="getMarkets" resultType="com.homeseek.map.dto.MarketDto">
+        SELECT
+            id AS id,
+            market_name AS name,
+            category AS category,
+            address AS address,
+            CAST(latitude AS CHAR) AS latitude,
+            CAST(longitude AS CHAR) AS longitude
+        FROM market
+    </select>
+
+    <select id="getSubways" resultType="com.homeseek.map.dto.SubwayDto">
+        SELECT
+            id AS id,
+            line AS line,
+            station_name AS name,
+            CAST(latitude AS CHAR) AS latitude,
+            CAST(longitude AS CHAR) AS longitude
+        FROM subway_station
+    </select>
+
+
 
 </mapper>

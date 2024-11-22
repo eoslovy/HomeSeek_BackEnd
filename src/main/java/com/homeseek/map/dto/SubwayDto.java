@@ -9,10 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ToggleEstateDto {
-    private String aptName;
-    private String si;
-    private String gu;
+public class SubwayDto {
+    private int id;
+    private String line;
+    private String name;
     private String latitude;
     private String longitude;
 }
