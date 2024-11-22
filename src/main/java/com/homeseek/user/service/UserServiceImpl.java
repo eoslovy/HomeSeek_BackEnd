@@ -105,4 +105,10 @@ public class UserServiceImpl implements UserService {
         }
         userMapper.deleteUser(id);
     }
+
+    @Override
+    public boolean checkDuplicateId(String userId) {
+        UserResp existingUser = userMapper.selectByUserId(userId);
+        return existingUser == null;
+    }
 }

@@ -8,4 +8,5 @@ public interface UserService {
     UserResp login(UserReq req);
     UserResp getUserInfo(int id);
     void deleteUser(int id);
+    boolean checkDuplicateId(String userId);
 }

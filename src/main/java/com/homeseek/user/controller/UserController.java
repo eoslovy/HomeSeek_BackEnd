@@ -15,6 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -33,6 +36,14 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<UserResp> login(@RequestBody UserReq req) {
         return ResponseEntity.ok(userService.login(req));
+    }
+
+    @GetMapping("/check-id/{userId}")
+    public ResponseEntity<Map<String, Boolean>> checkDuplicateId(@PathVariable String userId) {
+        boolean isAvailable = userService.checkDuplicateId(userId);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("available", isAvailable);
+        return ResponseEntity.ok(response);
     }
 
 //    @PostMapping("/kakao/login")

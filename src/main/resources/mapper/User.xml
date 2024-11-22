@@ -13,10 +13,18 @@
         <result property="refreshToken" column="refresh_token"/>
     </resultMap>
 
-    <select id="selectByUserId" parameterType="String" resultMap="UserResultMap">
-        SELECT id, user_id, pw, nickname, access_token, refresh_token
-        FROM users
-        WHERE user_id = #{userId}
+    <select id="selectByUserId" parameterType="String" resultType="com.homeseek.user.dto.UserResp">
+        SELECT
+            id,
+            user_id as userId,
+            pw,
+            nickname,
+            access_token as accessToken,
+            refresh_token as refreshToken
+        FROM
+            users
+        WHERE
+            user_id = #{userId}
     </select>
 
     <select id="selectById" parameterType="int" resultMap="UserResultMap">
