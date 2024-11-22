@@ -18,4 +18,7 @@ public interface MapMapper {
     List<ToggleEstateDto> findToggleEstateBySi(@Param("code") String code);
     List<ToggleEstateDto> findToggleEstateByGu(@Param("code") String code);
     List<ToggleEstateDto> findToggleEstateByDong(@Param("code") String code);
+    List<HospitalDto> getHospitals();
+    List<MarketDto> getMarkets();
+    List<SubwayDto> getSubways();
 }

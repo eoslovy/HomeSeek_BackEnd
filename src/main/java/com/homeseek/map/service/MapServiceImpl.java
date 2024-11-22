@@ -59,4 +59,19 @@ public class MapServiceImpl implements MapService {
     public List<ToggleEstateDto> getEstatesByToggleWithDong(String code) {
         return mm.findToggleEstateByDong(code);
     }
+
+    @Override
+    public List<HospitalDto> getHospitals() {
+        return mm.getHospitals();
+    }
+
+    @Override
+    public List<MarketDto> getMarkets() {
+        return mm.getMarkets();
+    }
+
+    @Override
+    public List<SubwayDto> getSubways() {
+        return mm.getSubways();
+    }
 }
