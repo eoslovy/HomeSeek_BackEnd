@@ -12,4 +12,7 @@ public interface MapService {
     List<ToggleEstateDto> getEstatesByToggleWithSi(String code);
     List<ToggleEstateDto> getEstatesByToggleWithGu(String code);
     List<ToggleEstateDto> getEstatesByToggleWithDong(String code);
+    List<HospitalDto> getHospitals();
+    List<MarketDto> getMarkets();
+    List<SubwayDto> getSubways();
 }

@@ -36,7 +36,6 @@ public class MapController {
 
     @GetMapping("/getEstatesByToggleWithSi")
     public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithSi(@RequestParam("code") String code){
-        System.out.println("==============================================");
         return ResponseEntity.ok(ms.getEstatesByToggleWithSi(code));
     }
 
@@ -48,5 +47,16 @@ public class MapController {
     @GetMapping("/getEstatesByToggleWithDong")
     public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithDong(@RequestParam("code") String code){
         return ResponseEntity.ok(ms.getEstatesByToggleWithDong(code));
+    }
+
+    @GetMapping("/getFacilities/{type}")
+    public ResponseEntity<List<?>> getHospitals(@PathVariable String type){
+        if(type.equals("hospitals")){
+            return ResponseEntity.ok(ms.getHospitals());
+        }else if(type.equals("markets")){
+            return ResponseEntity.ok(ms.getMarkets());
+        } else{
+            return ResponseEntity.ok(ms.getSubways());
+        }
     }
 }
