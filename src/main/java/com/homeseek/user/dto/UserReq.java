@@ -11,4 +11,5 @@ public class UserReq {
     private String userId;
     private String pw;
     private String nickname;
+    private boolean autoLogin;
 }

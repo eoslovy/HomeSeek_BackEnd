@@ -11,6 +11,7 @@ public class UserResp {
     private String userId;
     private String pw;
     private String nickname;
+    private boolean autoLogin;
     private String accessToken;
     private String refreshToken;
 }

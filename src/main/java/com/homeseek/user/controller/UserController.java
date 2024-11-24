@@ -9,6 +9,8 @@ import com.homeseek.user.dto.UserReq;
 import com.homeseek.user.dto.UserResp;
 //import com.homeseek.user.service.KakaoService;
 import com.homeseek.user.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -34,8 +36,26 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResp> login(@RequestBody UserReq req) {
-        return ResponseEntity.ok(userService.login(req));
+    public ResponseEntity<?> login(@RequestBody UserReq req,
+                                   HttpServletResponse response) {
+        try {
+            UserResp resp = userService.login(req);
+
+            // 자동 로그인이 체크되었다면 쿠키 생성
+            if (req.isAutoLogin()) {
+                String rememberMeToken = resp.getAccessToken();
+
+                Cookie rememberMeCookie = new Cookie("remember-me", rememberMeToken);
+                rememberMeCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
+                rememberMeCookie.setPath("/");
+                rememberMeCookie.setHttpOnly(true);
+                response.addCookie(rememberMeCookie);
+            }
+
+            return ResponseEntity.ok(resp);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/check-id/{userId}")

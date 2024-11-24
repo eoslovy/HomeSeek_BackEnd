@@ -39,6 +39,7 @@ public class UserServiceImpl implements UserService {
                 .userId(req.getUserId())
                 .pw(encodedPassword)
                 .nickname(req.getNickname())
+                .autoLogin(req.isAutoLogin())
                 .build();
 
         log.debug("newUser.getUserId(): {}", newUser.getUserId());
@@ -53,6 +54,7 @@ public class UserServiceImpl implements UserService {
                 .id(newUser.getId())
                 .userId(newUser.getUserId())
                 .nickname(newUser.getNickname())
+                .autoLogin(newUser.isAutoLogin())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -83,6 +85,7 @@ public class UserServiceImpl implements UserService {
                 .id(user.getId())
                 .userId(user.getUserId())
                 .nickname(user.getNickname())
+                .autoLogin(req.isAutoLogin())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
