@@ -6,8 +6,6 @@ import com.homeseek.user.dto.*;
 import com.homeseek.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -44,7 +42,7 @@ public class UserController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
-
+    @Operation(summary = "자동로그인")
     @PostMapping("/checkAutoLogin")
     public ResponseEntity<AutoLoginResp> checkAutoLogin(@RequestParam AutoLoginReq req) {
         return ResponseEntity.ok(userService.checkAutoLogin(req));
@@ -82,28 +80,25 @@ public class UserController {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
     }
-
+    @Operation(summary = "유저 관심매물 추가")
     @PostMapping("/setFavorite")
     public ResponseEntity<Void> setFavorite(@RequestBody UserFavoirteReq req) {
-        System.out.println("========================응답 들옴?");
-        System.out.println(req.getUserId());
-        System.out.println(req.getAptSeq());
         userService.setFavorite(req);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/deleteFavorite")
+    @Operation(summary = "유저 관심매물 삭제")
     public ResponseEntity<Void> deleteFavorite(@RequestBody UserFavoirteReq req) {
         userService.deleteFavorite(req);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/getFavorite")
+    @Operation(summary = "유저 관심매물 조회")
     public ResponseEntity<UserFavoirteResp> getFavorite(@RequestParam("userId") String userId, @RequestParam("aptSeq") String aptSeq) {
         return ResponseEntity.ok(userService.getFavorite(userId, aptSeq));
     }
 
-    @GetMapping("/getFavoriteList")
+    @Operation(summary = "유저 관심목록 조회")
     public ResponseEntity<List<AptDto>> getFavoriteList(@RequestParam("userId") String userId){
         return ResponseEntity.ok(userService.getFavoriteList(userId));
     }
