@@ -30,7 +30,6 @@ public class DealDataController {
                 request.getSi(),
                 request.getGu()
         );
-        System.out.println(request.getAptName() + " " + request.getSi() + " " + request.getGu());
         return ResponseEntity.ok(deals);
     }
 }
