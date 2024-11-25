@@ -16,5 +16,6 @@ public interface MapService {
     List<HospitalDto> getHospitals();
     List<MarketDto> getMarkets();
     List<SubwayDto> getSubways();
+    List<SchoolDto> getSchools();
     Map<String, List<?>> getNearbyFacilities(String aptName);  // 새로 추가할 메서드
 }

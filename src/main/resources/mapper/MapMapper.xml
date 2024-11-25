@@ -238,4 +238,16 @@
             CAST(longitude AS CHAR) AS longitude
         FROM subway_station
     </select>
+
+    <select id="getSchools" resultType="com.homeseek.map.dto.SchoolDto">
+        SELECT
+            id AS id,
+            school_name AS name,
+            category AS category,
+            type AS type,
+            address AS address,
+            CAST(latitude AS CHAR) AS latitude,
+            CAST(longitude AS CHAR) AS longitude
+        FROM school
+    </select>
 </mapper>

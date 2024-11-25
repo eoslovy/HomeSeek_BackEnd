@@ -80,6 +80,11 @@ public class MapServiceImpl implements MapService {
         return mm.getSubways();
     }
 
+    @Override
+    public List<SchoolDto> getSchools() {
+        return mm.getSchools();
+    }
+
     private double calculateDistance(String lat1, String lon1, String lat2, String lon2) {
         double latitude1 = Double.parseDouble(lat1);
         double longitude1 = Double.parseDouble(lon1);
@@ -117,11 +122,13 @@ public class MapServiceImpl implements MapService {
         List<HospitalDto> allHospitals = mm.getHospitals();
         List<MarketDto> allMarkets = mm.getMarkets();
         List<SubwayDto> allSubways = mm.getSubways();
+        List<SchoolDto> allSchools = mm.getSchools();
 
         Map<String, List<?>> result = new HashMap<>();
         result.put("hospitals", filterByDistance(apt, allHospitals));
         result.put("markets", filterByDistance(apt, allMarkets));
         result.put("subways", filterByDistance(apt, allSubways));
+        result.put("schools", filterByDistance(apt, allSchools));
 
         return result;
     }
@@ -141,6 +148,9 @@ public class MapServiceImpl implements MapService {
                     } else if (facility instanceof SubwayDto) {
                         facilityLat = ((SubwayDto) facility).getLatitude();
                         facilityLon = ((SubwayDto) facility).getLongitude();
+                    } else if (facility instanceof SchoolDto) {
+                        facilityLat = ((SchoolDto) facility).getLatitude();
+                        facilityLon = ((SchoolDto) facility).getLongitude();
                     }
 
                     double distanceKm = calculateDistance(

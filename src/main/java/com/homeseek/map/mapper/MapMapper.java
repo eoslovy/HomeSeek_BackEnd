@@ -21,4 +21,5 @@ public interface MapMapper {
     List<HospitalDto> getHospitals();
     List<MarketDto> getMarkets();
     List<SubwayDto> getSubways();
+    List<SchoolDto> getSchools();
 }
