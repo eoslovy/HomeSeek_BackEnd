@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Tag(name="지도")
 @RestController
@@ -69,5 +70,11 @@ public class MapController {
         } else{
             return ResponseEntity.ok(ms.getSubways());
         }
+    }
+
+    @Operation(summary = "아파트 주변 1km 시설 검색")
+    @GetMapping("/getNearbyFacilities")
+    public ResponseEntity<Map<String, List<?>>> getNearbyFacilities(@RequestParam("aptName") String aptName) {
+        return ResponseEntity.ok(ms.getNearbyFacilities(aptName));
     }
 }

@@ -3,6 +3,7 @@ package com.homeseek.map.service;
 import com.homeseek.map.dto.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface MapService {
     List<AptDto> getEstatesByName(String keyword);
@@ -15,4 +16,5 @@ public interface MapService {
     List<HospitalDto> getHospitals();
     List<MarketDto> getMarkets();
     List<SubwayDto> getSubways();
+    Map<String, List<?>> getNearbyFacilities(String aptName);  // 새로 추가할 메서드
 }
