@@ -7,6 +7,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 public class AptDto {
+    private String aptSeq;
     private String aptName;
     private String sidoName;
     private String gugunName;

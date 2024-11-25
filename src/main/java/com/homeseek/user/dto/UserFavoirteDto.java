@@ -2,14 +2,12 @@ package com.homeseek.user.dto;
 
 import lombok.*;
 
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserReq {
+public class UserFavoirteDto {
     private int id;
     private String userId;
-    private String pw;
-    private String nickname;
-    private boolean autoLogin;
+    private String aptSeq;
 }

@@ -1,14 +1,16 @@
 package com.homeseek.user.service;
 
 import com.homeseek.config.JwtUtil;
-import com.homeseek.user.dto.UserReq;
-import com.homeseek.user.dto.UserResp;
+import com.homeseek.map.dto.AptDto;
+import com.homeseek.user.dto.*;
 import com.homeseek.user.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -113,5 +115,37 @@ public class UserServiceImpl implements UserService {
     public boolean checkDuplicateId(String userId) {
         UserResp existingUser = userMapper.selectByUserId(userId);
         return existingUser == null;
+    }
+
+    @Override
+    public AutoLoginResp checkAutoLogin(AutoLoginReq req) {
+        return userMapper.checkAutoLogin(req.getUserId(), req.getAccessToken());
+    }
+
+    @Override
+    public void setFavorite(UserFavoirteReq req) {
+        userMapper.setFavorite(req.getUserId(), req.getAptSeq());
+    }
+
+    @Override
+    public void deleteFavorite(UserFavoirteReq req) {
+        userMapper.deleteFavorite(req.getUserId(), req.getAptSeq());
+    }
+
+    @Override
+    public UserFavoirteResp getFavorite(String userId, String aptSeq) {
+        UserFavoirteResp resp = new UserFavoirteResp();
+        if(userMapper.getFavorite(userId, aptSeq)== null) {
+            resp.setCheck(false);
+            return resp;
+        }else{
+            resp.setCheck(true);
+            return resp;
+        }
+    }
+
+    @Override
+    public List<AptDto> getFavoriteList(String userId) {
+        return userMapper.getFavoriteList(userId);
     }
 }

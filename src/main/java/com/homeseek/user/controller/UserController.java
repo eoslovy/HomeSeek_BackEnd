@@ -1,23 +1,16 @@
 package com.homeseek.user.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.homeseek.user.dto.KakaoUserReq;
-//import com.homeseek.user.dto.KakaoUserResp;
-import com.homeseek.user.dto.UserReq;
-import com.homeseek.user.dto.UserResp;
-//import com.homeseek.user.service.KakaoService;
+
+import com.homeseek.map.dto.AptDto;
+import com.homeseek.user.dto.*;
 import com.homeseek.user.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -36,26 +29,18 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody UserReq req,
-                                   HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody UserReq req) {
         try {
             UserResp resp = userService.login(req);
-
-            // 자동 로그인이 체크되었다면 쿠키 생성
-            if (req.isAutoLogin()) {
-                String rememberMeToken = resp.getAccessToken();
-
-                Cookie rememberMeCookie = new Cookie("remember-me", rememberMeToken);
-                rememberMeCookie.setMaxAge(7 * 24 * 60 * 60); // 7일
-                rememberMeCookie.setPath("/");
-                rememberMeCookie.setHttpOnly(true);
-                response.addCookie(rememberMeCookie);
-            }
-
             return ResponseEntity.ok(resp);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @PostMapping("/checkAutoLogin")
+    public ResponseEntity<AutoLoginResp> checkAutoLogin(@RequestParam AutoLoginReq req) {
+        return ResponseEntity.ok(userService.checkAutoLogin(req));
     }
 
     @GetMapping("/check-id/{userId}")
@@ -86,6 +71,31 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/setFavorite")
+    public ResponseEntity<Void> setFavorite(@RequestBody UserFavoirteReq req) {
+        System.out.println("========================응답 들옴?");
+        System.out.println(req.getUserId());
+        System.out.println(req.getAptSeq());
+        userService.setFavorite(req);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/deleteFavorite")
+    public ResponseEntity<Void> deleteFavorite(@RequestBody UserFavoirteReq req) {
+        userService.deleteFavorite(req);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/getFavorite")
+    public ResponseEntity<UserFavoirteResp> getFavorite(@RequestParam("userId") String userId, @RequestParam("aptSeq") String aptSeq) {
+        return ResponseEntity.ok(userService.getFavorite(userId, aptSeq));
+    }
+
+    @GetMapping("/getFavoriteList")
+    public ResponseEntity<List<AptDto>> getFavoriteList(@RequestParam("userId") String userId){
+        return ResponseEntity.ok(userService.getFavoriteList(userId));
     }
 
 //    @GetMapping("/oauth")

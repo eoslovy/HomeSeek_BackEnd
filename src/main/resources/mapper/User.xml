@@ -59,4 +59,58 @@
         DELETE FROM users
         WHERE id = #{id}
     </delete>
+
+    <select id="checkAutoLogin" resultType="com.homeseek.user.dto.AutoLoginResp">
+        select id,
+               user_id as userId,
+               pw,
+               nickname,
+               autologin as autoLogin,
+               access_token as accessToken,
+               refresh_token as refreshToken
+        from users
+        where user_id = #{id}
+        and access_token = #{accessToken}
+    </select>
+
+    <insert id="setFavorite">
+        insert into user_interest (user_id, apt_seq)
+        values(#{userId}, #{aptSeq})
+    </insert>
+
+    <delete id="deleteFavorite">
+        delete from user_interest
+        where user_id = #{userId} and apt_seq = #{aptSeq}
+    </delete>
+
+    <select id="getFavorite" resultType="com.homeseek.user.dto.UserFavoirteDto">
+        select id,
+               user_id as userId,
+               apt_seq as aptSeq
+        from user_interest
+        where user_id = #{userId} and apt_seq = #{aptSeq}
+    </select>
+
+    <select id="getFavoriteList" resultType="com.homeseek.map.dto.AptDto">
+        SELECT
+            hi.apt_seq AS aptSeq,
+            hi.apt_nm AS aptName,
+            dc.sido_name AS sidoName,
+            dc.gugun_name AS gugunName,
+            dc.dong_name AS dongName,
+            hi.build_year AS buildYear,
+            hi.latitude AS latitude,
+            hi.longitude AS longitude
+        FROM
+            houseinfos hi
+                JOIN dongcodes dc ON CONCAT(hi.sgg_cd, hi.umd_cd) = dc.dong_code,
+            user_interest ui
+        WHERE
+            ui.user_id = #{userId}
+          and hi.apt_seq = ui.apt_seq
+          AND hi.latitude IS NOT NULL
+          AND hi.longitude IS NOT NULL
+            LIMIT 50
+    </select>
+
 </mapper>

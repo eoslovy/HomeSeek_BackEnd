@@ -7,6 +7,7 @@
 
     <select id="findEstateByName" resultType="com.homeseek.map.dto.AptDto">
         SELECT
+            hi.apt_seq AS aptSeq,
             hi.apt_nm AS aptName,
             dc.sido_name AS sidoName,
             dc.gugun_name AS gugunName,
@@ -237,7 +238,4 @@
             CAST(longitude AS CHAR) AS longitude
         FROM subway_station
     </select>
-
-
-
 </mapper>
