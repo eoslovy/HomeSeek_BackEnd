@@ -4,6 +4,10 @@ package com.homeseek.user.controller;
 import com.homeseek.map.dto.AptDto;
 import com.homeseek.user.dto.*;
 import com.homeseek.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Tag(name="유저")
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
@@ -23,11 +28,13 @@ public class UserController {
 //    private final KakaoService kakaoService;
 //    private final ObjectMapper objectMapper;
 
+    @Operation(summary = "회원가입")
     @PostMapping("/signup")
     public ResponseEntity<UserResp> signUp(@RequestBody UserReq req) {
         return ResponseEntity.ok(userService.signUp(req));
     }
 
+    @Operation(summary = "로그인")
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserReq req) {
         try {
@@ -43,6 +50,7 @@ public class UserController {
         return ResponseEntity.ok(userService.checkAutoLogin(req));
     }
 
+    @Operation(summary = "아이디 중복 조회")
     @GetMapping("/check-id/{userId}")
     public ResponseEntity<Map<String, Boolean>> checkDuplicateId(@PathVariable String userId) {
         boolean isAvailable = userService.checkDuplicateId(userId);
@@ -62,11 +70,13 @@ public class UserController {
 //        return ResponseEntity.ok().build();
 //    }
 
+    @Operation(summary = "유저 조회")
     @GetMapping("/{id}")
     public ResponseEntity<UserResp> getUserInfo(@PathVariable int id) {
         return ResponseEntity.ok(userService.getUserInfo(id));
     }
 
+    @Operation(summary = "유저 삭제")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable int id) {
         userService.deleteUser(id);
