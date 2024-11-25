@@ -88,16 +88,19 @@ public class UserController {
     }
 
     @Operation(summary = "유저 관심매물 삭제")
+    @DeleteMapping("/deleteFavorite")
     public ResponseEntity<Void> deleteFavorite(@RequestBody UserFavoirteReq req) {
         userService.deleteFavorite(req);
         return ResponseEntity.ok().build();
     }
 
     @Operation(summary = "유저 관심매물 조회")
+    @GetMapping("/getFavorite")
     public ResponseEntity<UserFavoirteResp> getFavorite(@RequestParam("userId") String userId, @RequestParam("aptSeq") String aptSeq) {
         return ResponseEntity.ok(userService.getFavorite(userId, aptSeq));
     }
 
+    @GetMapping("/getFavoriteList")
     @Operation(summary = "유저 관심목록 조회")
     public ResponseEntity<List<AptDto>> getFavoriteList(@RequestParam("userId") String userId){
         return ResponseEntity.ok(userService.getFavoriteList(userId));

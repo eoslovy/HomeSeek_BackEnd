@@ -67,8 +67,10 @@ public class MapController {
             return ResponseEntity.ok(ms.getHospitals());
         }else if(type.equals("markets")){
             return ResponseEntity.ok(ms.getMarkets());
-        } else{
+        } else if(type.equals("subways")){
             return ResponseEntity.ok(ms.getSubways());
+        }else{
+            return ResponseEntity.ok(ms.getSchools());
         }
     }
 
