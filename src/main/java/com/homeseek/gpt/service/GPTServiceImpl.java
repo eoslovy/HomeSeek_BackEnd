@@ -76,7 +76,8 @@ public class GPTServiceImpl implements GPTService {
         }
     }
 
-    private String crawlHousingMarket() {
+    @Override
+    public String crawlHousingMarket() {
         WebDriverManager.chromedriver().setup();
 
         ChromeOptions options = new ChromeOptions();

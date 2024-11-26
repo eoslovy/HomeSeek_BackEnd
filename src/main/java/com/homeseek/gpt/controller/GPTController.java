@@ -35,4 +35,10 @@ public class GPTController {
                 request.getGu()
         );
     }
+
+    @Operation(summary = "시장 심리 지수")
+    @GetMapping("/sentiment")
+    public ResponseEntity<String> getSentiment() {
+        return ResponseEntity.ok(GPTService.crawlHousingMarket());
+    }
 }
