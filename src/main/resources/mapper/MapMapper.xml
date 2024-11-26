@@ -166,25 +166,28 @@
 
     <select id="findToggleEstateBySi" resultType="com.homeseek.map.dto.ToggleEstateDto">
         SELECT
+            hi.apt_seq as aptSeq,
             hi.apt_nm AS aptName,
-            hi.latitude AS latitude,
-            hi.longitude AS longitude
-        FROM
-            houseinfos hi
-        WHERE hi.latitude IS NOT NULL
-          AND hi.longitude IS NOT NULL
-        AND LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
-    </select>
-
-    <select id="findToggleEstateByGu" resultType="com.homeseek.map.dto.ToggleEstateDto">
-        SELECT
-            hi.apt_nm AS aptName,
-            dc.sido_name AS si,
             dc.gugun_name AS gu,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
-            houseinfos hi, (select sido_name, gugun_name from dongcodes where dong_code = #{code}) dc
+            houseinfos hi, dongcodes dc
+        WHERE hi.latitude IS NOT NULL
+          AND hi.longitude IS NOT NULL
+        AND LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
+        and hi.sgg_cd = left(dc.dong_code,5)
+    </select>
+
+    <select id="findToggleEstateByGu" resultType="com.homeseek.map.dto.ToggleEstateDto">
+        SELECT
+            hi.apt_seq as aptSeq,
+            hi.apt_nm AS aptName,
+            hi.umd_nm as dong,
+            hi.latitude AS latitude,
+            hi.longitude AS longitude
+        FROM
+            houseinfos hi
         WHERE
             hi.sgg_cd = LEFT(#{code}, 5)
           AND hi.latitude IS NOT NULL
@@ -193,9 +196,11 @@
 
     <select id="findToggleEstateByDong" resultType="com.homeseek.map.dto.ToggleEstateDto">
         SELECT
+            hi.apt_seq as aptSeq,
             hi.apt_nm AS aptName,
             dc.sido_name AS si,
             dc.gugun_name AS gu,
+            hi.umd_nm as dong,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
