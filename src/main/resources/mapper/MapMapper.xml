@@ -26,142 +26,34 @@
     </select>
 
     <select id="findDongNames" resultType="com.homeseek.map.dto.DongDto">
-        SELECT
-        al.dong AS dongName,
-        MIN(dc.dong_code) AS dongCode,
-        MIN(al.latitude) AS latitude,
-        MIN(al.longitude) AS longitude
-        FROM
-        (SELECT dong_code, dong_name
-        FROM dongcodes
-        WHERE dong_name IS NOT NULL
-        AND sido_name = #{si}
-        AND gugun_name = #{gu}) dc,
-        area_location al
-        WHERE
-        al.si = #{si}
-        AND al.gu = #{gu}
-        AND al.latitude IS NOT NULL
-        AND al.longitude IS NOT NULL
-        AND (
-        (CHAR_LENGTH(dc.dong_name) > 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 2), '%', RIGHT(dc.dong_name, 1)))
-        OR
-        (CHAR_LENGTH(dc.dong_name) &lt;= 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 1), '%', RIGHT(dc.dong_name, 1)))
-        )
-        GROUP BY
-        al.dong;
-
-    </select>
-
-    <select id="findDongNamesSe" resultType="com.homeseek.map.dto.DongDto">
-        SELECT
-        al.dong AS dongName,
-        MIN(dc.dong_code) AS dongCode,
-        MIN(al.latitude) AS latitude,
-        MIN(al.longitude) AS longitude
-        FROM
-        (SELECT dong_code, dong_name
-        FROM dongcodes
-        WHERE dong_name IS NOT NULL
-        AND sido_name = "세종특별자치시") dc,
-        area_location al
-        WHERE
-        al.si = "세종특별자치시"
-        AND al.gu = #{gu}
-        AND al.latitude IS NOT NULL
-        AND al.longitude IS NOT NULL
-        AND (
-        (CHAR_LENGTH(dc.dong_name) > 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 2), '%', RIGHT(dc.dong_name, 1)))
-        OR
-        (CHAR_LENGTH(dc.dong_name) &lt;= 2 AND al.dong LIKE CONCAT(LEFT(dc.dong_name, 1), '%', RIGHT(dc.dong_name, 1)))
-        )
-        GROUP BY
-            al.dong;
+        select dong_code as dongCode,
+               dong_name as dongName,
+               latitude,
+               longitude
+        from dongcodes
+        where sido_name = #{si}
+        and gugun_name = #{gu}
+        and dong_name is not null
     </select>
 
     <select id="findGuNames" resultType="com.homeseek.map.dto.GuDto">
-        SELECT
-            al.gu AS guName,
-            dc.dong_code AS dongCode,
-            al.latitude AS latitude,
-            al.longitude AS longitude
-        FROM
-            (SELECT dong_code, gugun_name
-             FROM dongcodes
-             WHERE gugun_name IS NOT NULL
-               AND dong_name IS NULL
-               AND sido_name = #{si}) dc,
-            area_location al
-        WHERE
-            al.si = #{si}
-          AND dc.gugun_name = al.gu
-          AND al.dong = ""
-          AND al.latitude IS NOT NULL
-          AND al.longitude IS NOT NULL;
-    </select>
-
-    <select id="findGuNamesSe" resultType="com.homeseek.map.dto.GuDto">
-        SELECT
-            al.gu AS guName,
-            dc.dong_code AS dongCode,
-            al.latitude AS latitude,
-            al.longitude AS longitude
-        FROM
-            (SELECT dong_code, dong_name
-             FROM dongcodes
-             WHERE gugun_name IS NOT NULL
-               AND (CHAR_LENGTH(dong_name) = 3 OR CHAR_LENGTH(dong_name) = 4)
-               AND sido_name = "세종특별자치시") dc,
-            area_location al
-        WHERE
-            al.si = "세종특별자치시"
-          AND dc.dong_name = al.gu
-          AND al.dong = ""
-          AND al.latitude IS NOT NULL
-          AND al.longitude IS NOT NULL;
+        select distinct dong_code as dongCode,
+               gugun_name as guName,
+               latitude,
+               longitude
+        from dongcodes
+        where sido_name = #{si}
+        and gugun_name is not null
+        and dong_name is null
     </select>
 
     <select id="findSiNames" resultType="com.homeseek.map.dto.SiDto">
-        SELECT
-            al.si AS siName,
-            dc.dong_code AS dongCode,
-            al.latitude AS latitude,
-            al.longitude AS longitude
-        FROM
-            (SELECT dong_code, sido_name
-             FROM dongcodes
-             WHERE sido_name IS NOT NULL
-               AND gugun_name IS NULL
-               AND dong_name IS NULL) dc,
-            area_location al
-        WHERE
-            dc.sido_name = al.si
-          AND al.gu = ""
-          AND al.dong = ""
-          AND al.latitude IS NOT NULL
-          AND al.longitude IS NOT NULL;
-    </select>
-
-    <select id="findSiNamesSe" resultType="com.homeseek.map.dto.SiDto">
-        SELECT
-            al.si AS siName,
-            dc.dong_code AS dongCode,
-            al.latitude AS latitude,
-            al.longitude AS longitude
-        FROM
-            (SELECT dong_code, sido_name
-             FROM dongcodes
-             WHERE sido_name IS NOT NULL
-               AND sido_name = "세종특별자치시"
-               AND dong_name IS NULL) dc,
-            area_location al
-        WHERE
-            dc.sido_name = al.si
-          AND al.si = "세종특별자치시"
-          AND al.gu = ""
-          AND al.dong = ""
-          AND al.latitude IS NOT NULL
-          AND al.longitude IS NOT NULL;
+        select dong_code as dongCode,
+               sido_name as siName,
+               latitude,
+               longitude
+        from dongcodes
+        where gugun_name is null
     </select>
 
     <select id="findToggleEstateBySi" resultType="com.homeseek.map.dto.ToggleEstateDto">
@@ -169,13 +61,12 @@
             hi.apt_seq as aptSeq,
             hi.apt_nm AS aptName,
             dc.gugun_name AS gu,
+            dc.dong_name as dong,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
             houseinfos hi, dongcodes dc
-        WHERE hi.latitude IS NOT NULL
-          AND hi.longitude IS NOT NULL
-        AND LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
+        WHERE LEFT(hi.sgg_cd, 2) = LEFT(#{code}, 2)
         and hi.sgg_cd = left(dc.dong_code,5)
     </select>
 
@@ -200,15 +91,13 @@
             hi.apt_nm AS aptName,
             dc.sido_name AS si,
             dc.gugun_name AS gu,
-            hi.umd_nm as dong,
+            dc.dong_name as dong,
             hi.latitude AS latitude,
             hi.longitude AS longitude
         FROM
-            houseinfos hi, (select sido_name, gugun_name from dongcodes where dong_code = #{code}) dc
-        WHERE
-            CONCAT(hi.sgg_cd, hi.umd_cd) = #{code}
-          AND hi.latitude IS NOT NULL
-          AND hi.longitude IS NOT NULL;
+            houseinfos hi, dongcodes dc
+        WHERE CONCAT(hi.sgg_cd, hi.umd_cd) = #{code}
+        and hi.umd_nm = dc.dong_name
     </select>
 
     <select id="getHospitals" resultType="com.homeseek.map.dto.HospitalDto">

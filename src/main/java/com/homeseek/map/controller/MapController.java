@@ -45,11 +45,6 @@ public class MapController {
     @Operation(summary = "시 별로 조회")
     @GetMapping("/getEstatesByToggleWithSi")
     public ResponseEntity<List<ToggleEstateDto>> getEstatesByToggleWithSi(@RequestParam("code") String code){
-        List<ToggleEstateDto> list = ms.getEstatesByToggleWithSi(code);
-        for (ToggleEstateDto toggleEstateDto : list) {
-            System.out.println(toggleEstateDto.getSi());
-            System.out.println(toggleEstateDto.getGu());
-        }
         return ResponseEntity.ok(ms.getEstatesByToggleWithSi(code));
     }
 
