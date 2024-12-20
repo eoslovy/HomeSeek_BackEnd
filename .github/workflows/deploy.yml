@@ -1,0 +1,25 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # main 브랜치에 푸시될 때마다 실행
+
+jobs:
+  build:
+    runs-on: ubuntu-latest  # Ubuntu 최신 버전에서 실행
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # 리포지토리의 코드를 체크아웃
+
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: '18'  # 사용할 JDK 버전
+
+      - name: Build with Gradle
+        run: ./gradlew build  # Gradle을 사용하여 빌드 및 테스트 실행
+
+      - name: Run tests
+        run: ./gradlew test  # 테스트 실행
