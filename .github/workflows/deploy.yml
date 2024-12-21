@@ -25,14 +25,21 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test # Gradle을 사용하여 빌드 및 테스트 실행
 
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
-
       - name: Build Docker image
-        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest .
+        run: docker build -t homeseek:latest .  # Docker 이미지를 로컬에서 빌드
 
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest
+      - name: Save Docker image to tar file
+        run: docker save -o homeseek.tar homeseek:latest  # Docker 이미지를 tar 파일로 저장
+
+      - name: Transfer Docker image to EC2
+        env:
+            EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+            EC2_HOST: ${{ secrets.EC2_HOST }}
+            EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$EC2_SSH_KEY" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          scp -o StrictHostKeyChecking=no -i ec2_key.pem homeseek.tar $EC2_USER@$EC2_HOST:/home/$EC2_USER/
 
       - name: Deploy to EC2
         env:
@@ -55,9 +62,9 @@ jobs:
           echo "$EC2_SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-              sudo docker pull ***/homeseek:latest
-              sudo docker ps -q --filter "ancestor=***/homeseek:latest" | xargs -r sudo docker stop
-              sudo docker ps -aq --filter "ancestor=***/homeseek:latest" | xargs -r sudo docker rm
+              sudo docker load < /home/$USER/homeseek.tar
+              sudo docker ps -q --filter "ancestor=homeseek:latest" | xargs -r sudo docker stop
+              sudo docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r sudo docker rm
               sudo docker run -d -p 8080:8080 \
                   -e DB_URL="$DB_URL" \
                   -e DB_USERNAME="$DB_USERNAME" \
@@ -71,5 +78,5 @@ jobs:
                   -e JWT_SECRET="$JWT_SECRET" \
                   -e JWT_EXPIRATION_ACCESS="$JWT_EXPIRATION_ACCESS" \
                   -e JWT_EXPIRATION_REFRESH="$JWT_EXPIRATION_REFRESH" \
-                  ***/homeseek:latest
+                  homeseek:latest
           EOF
