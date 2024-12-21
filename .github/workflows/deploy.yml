@@ -52,24 +52,24 @@ jobs:
             JWT_EXPIRATION_ACCESS: ${{ secrets.JWT_EXPIRATION_ACCESS }}
             JWT_EXPIRATION_REFRESH: ${{ secrets.JWT_EXPIRATION_REFRESH }}
         run: |
-            echo "$EC2_SSH_KEY" > ec2_key.pem
-            chmod 600 ec2_key.pem
-            ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-                docker pull ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest  # 최신 Docker 이미지를 EC2로 가져오기
-                docker ps -q --filter "ancestor=${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest" | xargs -r docker stop  # 기존 컨테이너 중지
-                docker ps -aq --filter "ancestor=${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest" | xargs -r docker rm  # 기존 컨테이너 삭제
-                docker run -d -p 8080:8080 \
-                    -e DB_URL=${{ secrets.DB_URL }} \
-                    -e DB_USERNAME=${{ secrets.DB_USERNAME }} \
-                    -e DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
-                    -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
-                    -e NAVER_CLIENT_ID=${{ secrets.NAVER_CLIENT_ID }} \
-                    -e NAVER_CLIENT_SECRET=${{ secrets.NAVER_CLIENT_SECRET }} \
-                    -e KAKAO_CLIENT_ID=${{ secrets.KAKAO_CLIENT_ID }} \
-                    -e KAKAO_CLIENT_SECRET=${{ secrets.KAKAO_CLIENT_SECRET }} \
-                    -e KAKAO_REDIRECT_URI=${{ secrets.KAKAO_REDIRECT_URI }} \
-                    -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-                    -e JWT_EXPIRATION_ACCESS=${{ secrets.JWT_EXPIRATION_ACCESS }} \
-                    -e JWT_EXPIRATION_REFRESH=${{ secrets.JWT_EXPIRATION_REFRESH }} \
-                    ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest  # 새 컨테이너 실행
-            EOF
+          echo "$EC2_SSH_KEY" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
+              sudo docker pull ***/homeseek:latest
+              sudo docker ps -q --filter "ancestor=***/homeseek:latest" | xargs -r sudo docker stop
+              sudo docker ps -aq --filter "ancestor=***/homeseek:latest" | xargs -r sudo docker rm
+              sudo docker run -d -p 8080:8080 \
+                  -e DB_URL="$DB_URL" \
+                  -e DB_USERNAME="$DB_USERNAME" \
+                  -e DB_PASSWORD="$DB_PASSWORD" \
+                  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
+                  -e NAVER_CLIENT_ID="$NAVER_CLIENT_ID" \
+                  -e NAVER_CLIENT_SECRET="$NAVER_CLIENT_SECRET" \
+                  -e KAKAO_CLIENT_ID="$KAKAO_CLIENT_ID" \
+                  -e KAKAO_CLIENT_SECRET="$KAKAO_CLIENT_SECRET" \
+                  -e KAKAO_REDIRECT_URI="$KAKAO_REDIRECT_URI" \
+                  -e JWT_SECRET="$JWT_SECRET" \
+                  -e JWT_EXPIRATION_ACCESS="$JWT_EXPIRATION_ACCESS" \
+                  -e JWT_EXPIRATION_REFRESH="$JWT_EXPIRATION_REFRESH" \
+                  ***/homeseek:latest
+          EOF
