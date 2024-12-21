@@ -28,10 +28,10 @@ jobs:
         run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Build Docker image
-        run: docker build -t homeseek .  # Docker 이미지 빌드
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest .
 
       - name: Push Docker image
-        run: docker push homeseek  # Docker Hub에 이미지 푸시
+        run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest
 
       - name: Deploy to EC2
         env:
@@ -42,6 +42,8 @@ jobs:
             echo "$EC2_SSH_KEY" > ec2_key.pem
             chmod 600 ec2_key.pem
             ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-              docker pull homeseek  # EC2에서 Docker 이미지 풀
-              docker run -d -p 8080:8080 homeseek  # Docker 컨테이너 실행
+                docker pull ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest  # 최신 Docker 이미지를 EC2로 가져오기
+                docker ps -q --filter "ancestor=${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest" | xargs -r docker stop  # 기존 컨테이너 중지
+                docker ps -aq --filter "ancestor=${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest" | xargs -r docker rm  # 기존 컨테이너 삭제
+                docker run -d -p 8080:8080 ${{ secrets.DOCKERHUB_USERNAME }}/homeseek:latest  # 새 컨테이너 실행
             EOF
