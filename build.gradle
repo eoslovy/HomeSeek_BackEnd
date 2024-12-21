@@ -59,6 +59,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 }
 
+// distribution 관련 설정 추가
+if (project.hasProperty('distribution')) {
+    println "Building distribution: ${project.property('distribution')}"
+}
+
 tasks.named('test') {
     useJUnitPlatform()
 }
