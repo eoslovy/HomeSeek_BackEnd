@@ -20,7 +20,7 @@ jobs:
           distribution: 'adopt'  # JDK 배포판 설정
 
       - name: Build with Gradle
-        run: ./gradlew build -Pdistribution=homeseek-backend # Gradle을 사용하여 빌드 및 테스트 실행
+        run: ./gradlew build # Gradle을 사용하여 빌드 및 테스트 실행
 
       - name: Run tests
         run: ./gradlew test  # 테스트 실행
