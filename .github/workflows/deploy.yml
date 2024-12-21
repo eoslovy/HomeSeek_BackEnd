@@ -19,7 +19,7 @@ jobs:
           java-version: '18'  # 사용할 JDK 버전
 
       - name: Build with Gradle
-        run: ./gradlew build  # Gradle을 사용하여 빌드 및 테스트 실행
+        run: ./gradlew build -Pdistribution=homeseek-backend # Gradle을 사용하여 빌드 및 테스트 실행
 
       - name: Run tests
         run: ./gradlew test  # 테스트 실행
