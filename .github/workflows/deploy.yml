@@ -23,3 +23,25 @@ jobs:
 
       - name: Run tests
         run: ./gradlew test  # 테스트 실행
+
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Build Docker image
+        run: docker build -t homeseek .  # Docker 이미지 빌드
+
+      - name: Push Docker image
+        run: docker push homeseek  # Docker Hub에 이미지 푸시
+
+      - name: Deploy to EC2
+        env:
+            EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+            EC2_HOST: ${{ secrets.EC2_HOST }}
+            EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+            echo "$EC2_SSH_KEY" > ec2_key.pem
+            chmod 600 ec2_key.pem
+            ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
+              docker pull homeseek  # EC2에서 Docker 이미지 풀
+              docker run -d -p 8080:8080 homeseek  # Docker 컨테이너 실행
+            EOF
