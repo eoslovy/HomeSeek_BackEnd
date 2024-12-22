@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  # master 브랜치에 푸시될 때마다 실행
+      - master  # master 브랜치에 푸시될 때 실행
 
 jobs:
   build:
@@ -17,13 +17,13 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: '18'  # 사용할 JDK 버전
-          distribution: 'adopt'  # JDK 배포판 설정
+          distribution: 'temurin'  # JDK 배포판 설정
 
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew  # gradlew에 실행 권한 부여
 
       - name: Build with Gradle
-        run: ./gradlew build -x test # Gradle을 사용하여 빌드 및 테스트 실행
+        run: ./gradlew build -x test  # Gradle을 사용하여 빌드 및 테스트 실행
 
       - name: Build Docker image
         run: docker build -t homeseek:latest .  # Docker 이미지를 로컬에서 빌드
@@ -33,9 +33,9 @@ jobs:
 
       - name: Transfer Docker image to EC2
         env:
-            EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-            EC2_HOST: ${{ secrets.EC2_HOST }}
-            EC2_USER: ${{ secrets.EC2_USER }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$EC2_SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
@@ -43,40 +43,16 @@ jobs:
 
       - name: Deploy to EC2
         env:
-            EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
-            EC2_HOST: ${{ secrets.EC2_HOST }}
-            EC2_USER: ${{ secrets.EC2_USER }}
-            DB_URL: ${{ secrets.DB_URL }}
-            DB_USERNAME: ${{ secrets.DB_USERNAME }}
-            DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-            OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-            NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
-            NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-            KAKAO_CLIENT_ID: ${{ secrets.KAKAO_CLIENT_ID }}
-            KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-            KAKAO_REDIRECT_URI: ${{ secrets.KAKAO_REDIRECT_URI }}
-            JWT_SECRET: ${{ secrets.JWT_SECRET }}
-            JWT_EXPIRATION_ACCESS: ${{ secrets.JWT_EXPIRATION_ACCESS }}
-            JWT_EXPIRATION_REFRESH: ${{ secrets.JWT_EXPIRATION_REFRESH }}
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$EC2_SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-              sudo docker load < /home/$USER/homeseek.tar
-              sudo docker ps -q --filter "ancestor=homeseek:latest" | xargs -r sudo docker stop
-              sudo docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r sudo docker rm
-              sudo docker run -d -p 8080:8080 \
-                  -e DB_URL="$DB_URL" \
-                  -e DB_USERNAME="$DB_USERNAME" \
-                  -e DB_PASSWORD="$DB_PASSWORD" \
-                  -e OPENAI_API_KEY="$OPENAI_API_KEY" \
-                  -e NAVER_CLIENT_ID="$NAVER_CLIENT_ID" \
-                  -e NAVER_CLIENT_SECRET="$NAVER_CLIENT_SECRET" \
-                  -e KAKAO_CLIENT_ID="$KAKAO_CLIENT_ID" \
-                  -e KAKAO_CLIENT_SECRET="$KAKAO_CLIENT_SECRET" \
-                  -e KAKAO_REDIRECT_URI="$KAKAO_REDIRECT_URI" \
-                  -e JWT_SECRET="$JWT_SECRET" \
-                  -e JWT_EXPIRATION_ACCESS="$JWT_EXPIRATION_ACCESS" \
-                  -e JWT_EXPIRATION_REFRESH="$JWT_EXPIRATION_REFRESH" \
+              docker load < /home/$EC2_USER/homeseek.tar
+              docker ps -q --filter "ancestor=homeseek:latest" | xargs -r docker stop
+              docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r docker rm
+              docker run -d -p 8080:8080 \
                   homeseek:latest
           EOF
