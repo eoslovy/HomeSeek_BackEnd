@@ -39,16 +39,13 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
-          # EC2 접속을 위한 키 파일 생성
           echo "$EC2_SSH_KEY" > ec2_key.pem
           chmod 600 ec2_key.pem
-          # tar 파일을 EC2로 전송
           scp -o StrictHostKeyChecking=no -i ec2_key.pem homeseek.tar $EC2_USER@$EC2_HOST:/home/$EC2_USER/
-          # EC2에서 도커 컨테이너 실행
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << 'EOF'
-            docker load < /home/$EC2_USER/homeseek.tar  # tar 파일에서 도커 이미지 로드
-            docker ps -q --filter "ancestor=homeseek:latest" | xargs -r docker stop  # 기존 컨테이너 중지
-            docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r docker rm   # 기존 컨테이너 삭제
-            docker run -d -p 8080:8080 homeseek:latest  # 새 컨테이너 실행
-            rm /home/$EC2_USER/homeseek.tar  # 사용한 tar 파일 삭제
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem $EC2_USER@$EC2_HOST << EOF
+            docker load < /home/${EC2_USER}/homeseek.tar
+            docker ps -q --filter "ancestor=homeseek:latest" | xargs -r docker stop
+            docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r docker rm
+            docker run -d -p 8080:8080 homeseek:latest
+            rm /home/${EC2_USER}/homeseek.tar
           EOF
