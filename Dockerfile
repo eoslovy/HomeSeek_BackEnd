@@ -1,6 +1,6 @@
 FROM openjdk:18-jdk-slim
 
-# Chrome 및 필요한 패키지 설치
+# 필수 패키지 설치
 RUN apt-get update && apt-get install -y \
     wget \
     gnupg \
@@ -12,20 +12,19 @@ RUN apt-get update && apt-get install -y \
     && echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome.gpg] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
     && apt-get update \
     && apt-get install -y google-chrome-stable \
-    && rm -rf /var/lib/apt/lists/*
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # ChromeDriver 설치
 RUN CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | awk -F'.' '{print $1}') \
-    && wget -q "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/${CHROME_VERSION}/linux64/chromedriver-linux64.zip" -O /tmp/chromedriver.zip \
+    && wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}" -O /tmp/chrome_version \
+    && wget -q "https://chromedriver.storage.googleapis.com/$(cat /tmp/chrome_version)/chromedriver_linux64.zip" -O /tmp/chromedriver.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin \
-    && mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/ \
-    && rm -rf /usr/local/bin/chromedriver-linux64 \
-    && rm /tmp/chromedriver.zip \
+    && rm /tmp/chromedriver.zip /tmp/chrome_version \
     && chmod +x /usr/local/bin/chromedriver
 
 WORKDIR /app
 
-# 애플리케이션 설정 파일 복사
+# 애플리케이션 설정 복사
 COPY src/main/resources/application.properties /app/config/
 
 # JAR 파일 복사
