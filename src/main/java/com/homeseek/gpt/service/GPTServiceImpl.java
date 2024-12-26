@@ -93,7 +93,7 @@ public class GPTServiceImpl implements GPTService {
         try {
             driver.get(KB_URL);
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(0));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement txtElement = wait.until(ExpectedConditions.presenceOfElementLocated(
                     By.cssSelector("div[data-v-1c68e3e2].txt")));
 

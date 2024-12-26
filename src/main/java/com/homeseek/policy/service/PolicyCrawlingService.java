@@ -35,7 +35,7 @@ public class PolicyCrawlingService {
 
             // 필수 요소만 대기
             By containerSelector = By.cssSelector("div[data-v-e213cf2a] .titdepth2");
-            new WebDriverWait(driver, Duration.ofMillis(500))
+            new WebDriverWait(driver, Duration.ofSeconds(5))
                     .until(ExpectedConditions.presenceOfAllElementsLocatedBy(containerSelector));
 
             // 최소한의 스크롤만 수행
