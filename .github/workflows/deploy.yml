@@ -1,9 +1,8 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
-      - master
+      - master  # master 브랜치에 push될 때만 실행
 
 jobs:
   build:
@@ -30,12 +29,8 @@ jobs:
 
       - name: Build with Gradle
         run: |
-          chmod +x ./gradlew  # gradlew 파일에 실행 권한 부여
-          ./gradlew build -x test  # 테스트를 제외하고 프로젝트 빌드
-
-      # JAR 파일 내용 확인 단계 추가
-      - name: Check JAR contents
-        run: jar tvf build/libs/*.jar | grep application.properties
+          chmod +x ./gradlew
+          ./gradlew build -x test
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3  # 빌드 결과물을 아티팩트로 저장
@@ -48,7 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # GitHub 저장소 코드를 워크플로우에 체크아웃
 
       - name: Download artifact
         uses: actions/download-artifact@v3  # 이전 단계에서 저장한 JAR 파일 다운로드
