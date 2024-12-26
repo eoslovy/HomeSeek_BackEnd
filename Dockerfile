@@ -14,10 +14,9 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y google-chrome-stable \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# ChromeDriver 설치 (안정 버전 사용)
-RUN CHROME_VERSION="120" \
-    && echo "Using Chrome Version: $CHROME_VERSION" \
-    && wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE_${CHROME_VERSION}" -O /tmp/chrome_version \
+# ChromeDriver 설치 (최신 안정 버전 사용)
+RUN wget -q "https://chromedriver.storage.googleapis.com/LATEST_RELEASE" -O /tmp/chrome_version \
+    && echo "Using ChromeDriver Version: $(cat /tmp/chrome_version)" \
     && wget -q "https://chromedriver.storage.googleapis.com/$(cat /tmp/chrome_version)/chromedriver_linux64.zip" -O /tmp/chromedriver.zip \
     && unzip /tmp/chromedriver.zip -d /usr/local/bin \
     && rm /tmp/chromedriver.zip /tmp/chrome_version \
