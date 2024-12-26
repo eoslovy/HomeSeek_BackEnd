@@ -1,8 +1,10 @@
 name: CI/CD Pipeline
+
 on:
   push:
     branches:
-      - master  # master 브랜치에 push될 때만 실행
+      - master
+
 jobs:
   build:
     runs-on: ubuntu-latest  # Ubuntu 환경에서 실행
@@ -17,7 +19,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Cache Gradle packages
-        uses: actions/cache@v2  # Gradle 빌드 캐시를 저장하여 빌드 속도 향상
+        uses: actions/cache@v3  # Gradle 빌드 캐시를 저장하여 빌드 속도 향상
         with:
           path: |
             ~/.gradle/caches
@@ -25,17 +27,59 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew  # gradlew 파일에 실행 권한 부여
+
       - name: Build with Gradle
-        run: ./gradlew build -x test  # 테스트를 제외하고 프로젝트 빌드
+        run: |
+          chmod +x ./gradlew  # gradlew 파일에 실행 권한 부여
+          ./gradlew build -x test  # 테스트를 제외하고 프로젝트 빌드
+
+      # JAR 파일 내용 확인 단계 추가
+      - name: Check JAR contents
+        run: jar tvf build/libs/*.jar | grep application.properties
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2  # 빌드 결과물을 아티팩트로 저장
+        with:
+          name: app-build
+          path: build/libs/*.jar
+
+  docker:
+    needs: build  # build 작업이 성공적으로 완료된 후 실행
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2  # 이전 단계에서 저장한 JAR 파일 다운로드
+        with:
+          name: app-build
+          path: build/libs
+
       - name: Build Docker image
         run: docker build -t homeseek:latest .  # Dockerfile을 사용하여 도커 이미지 빌드
+
       - name: Save Docker image
         run: docker save -o homeseek.tar homeseek:latest  # 도커 이미지를 tar 파일로 저장
-      - name: Transfer and Deploy to EC2
+
+      - name: Upload Docker image
+        uses: actions/upload-artifact@v2  # 도커 이미지를 아티팩트로 저장
+        with:
+          name: docker-image
+          path: homeseek.tar
+
+  deploy:
+    needs: docker  # docker 작업이 성공적으로 완료된 후 실행
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Docker image
+        uses: actions/download-artifact@v2  # 도커 이미지 다운로드
+        with:
+          name: docker-image
+
+      - name: Deploy to EC2
         env:
-          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}  # GitHub secrets에서 EC2 접속 정보 가져오기
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
@@ -46,6 +90,6 @@ jobs:
             docker load < /home/${EC2_USER}/homeseek.tar
             docker ps -q --filter "ancestor=homeseek:latest" | xargs -r docker stop
             docker ps -aq --filter "ancestor=homeseek:latest" | xargs -r docker rm
-            docker run -d -p 8080:8080 homeseek:latest
+            docker run -d --restart unless-stopped -p 8080:8080 homeseek:latest
             rm /home/${EC2_USER}/homeseek.tar
           EOF
