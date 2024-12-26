@@ -22,9 +22,9 @@ import java.util.List;
 @Slf4j
 public class PolicyCrawlingService {
     private static final String KB_POLICY_URL = "https://data.kbland.kr/publicdata/real-estate-policy";
-    private static final Duration PAGE_LOAD_TIMEOUT = Duration.ofSeconds(2);
-    private static final Duration SCRIPT_TIMEOUT = Duration.ofSeconds(1);
-    private static final Duration IMPLICIT_WAIT = Duration.ofMillis(100);
+    private static final Duration PAGE_LOAD_TIMEOUT = Duration.ofSeconds(10);
+    private static final Duration SCRIPT_TIMEOUT = Duration.ofSeconds(5);
+    private static final Duration IMPLICIT_WAIT = Duration.ofSeconds(2);
 
     public List<PolicyGroup> crawlPolicyData() {
         WebDriver driver = null;
