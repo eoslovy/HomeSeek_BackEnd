@@ -50,7 +50,12 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:5173", "http://localhost:8080")
+                        .allowedOrigins(
+                                "http://localhost:5173",
+                                "http://localhost:8080",
+                                "http://ec2-3-39-240-71.ap-northeast-2.compute.amazonaws.com:8080",
+                                "https://homeseek.vercel.app/"
+                        )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
