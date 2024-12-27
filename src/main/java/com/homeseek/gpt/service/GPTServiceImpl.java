@@ -9,6 +9,7 @@ import com.homeseek.sale.dto.SaleResp;
 import com.homeseek.sale.service.SaleService;
 import io.github.bonigarcia.wdm.WebDriverManager;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.time.Duration;
 import java.util.List;
 
+@Slf4j
 @Service
 public class GPTServiceImpl implements GPTService {
 
@@ -78,10 +80,12 @@ public class GPTServiceImpl implements GPTService {
 
     @Override
     public String crawlHousingMarket() {
-        WebDriverManager.chromedriver().setup();
+        // WebDriverManager 대신 시스템 프로퍼티 사용
+        System.setProperty("webdriver.chrome.driver", "/usr/local/bin/chromedriver");
 
         ChromeOptions options = new ChromeOptions();
-        options.addArguments("--headless");
+        // 기존 옵션들
+        options.addArguments("--headless=new");  // 새로운 headless 모드
         options.addArguments("--disable-gpu");
         options.addArguments("--no-sandbox");
         options.addArguments("--remote-allow-origins=*");
@@ -89,21 +93,32 @@ public class GPTServiceImpl implements GPTService {
         options.addArguments("--disable-extensions");
         options.addArguments("--blink-settings=imagesEnabled=false");
 
-        WebDriver driver = new ChromeDriver(options);
+        // 추가 옵션들
+        options.addArguments("--window-size=1920,1080");  // 윈도우 크기 설정
+        options.addArguments("--disable-software-rasterizer");
+        options.addArguments("--ignore-certificate-errors");
+        options.addArguments("--lang=ko_KR");  // 한국어 설정
+
+        WebDriver driver = null;
         try {
+            driver = new ChromeDriver(options);
             driver.get(KB_URL);
 
-            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));  // 타임아웃 증가
             WebElement txtElement = wait.until(ExpectedConditions.presenceOfElementLocated(
                     By.cssSelector("div[data-v-1c68e3e2].txt")));
 
             return txtElement.getText();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("크롤링 중 오류 발생: ", e);  // 로깅 추가
             return "데이터를 가져오는 중 오류가 발생했습니다: " + e.getMessage();
         } finally {
             if (driver != null) {
-                driver.quit();
+                try {
+                    driver.quit();
+                } catch (Exception e) {
+                    log.error("드라이버 종료 중 오류 발생: ", e);
+                }
             }
         }
     }
